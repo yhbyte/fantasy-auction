@@ -2,17 +2,15 @@
 
 CREATE TABLE roles
 (
-    id         BIGSERIAL PRIMARY KEY,
-    role_name  VARCHAR(50)              NOT NULL UNIQUE,
-    created_at TIMESTAMP WITH TIME ZONE NOT NULL,
-    updated_at TIMESTAMP WITH TIME ZONE
+    id   BIGSERIAL PRIMARY KEY,
+    name VARCHAR(50) NOT NULL UNIQUE
 );
 
 CREATE TABLE users
 (
     id         BIGSERIAL PRIMARY KEY,
-    username   VARCHAR(50)              NOT NULL UNIQUE,
-    email      VARCHAR(100)             NOT NULL UNIQUE,
+    username   VARCHAR(255)              NOT NULL UNIQUE,
+    email      VARCHAR(255)             NOT NULL UNIQUE,
     password   VARCHAR(255)             NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,
     updated_at TIMESTAMP WITH TIME ZONE

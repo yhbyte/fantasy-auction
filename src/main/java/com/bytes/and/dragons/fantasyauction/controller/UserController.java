@@ -1,6 +1,8 @@
 package com.bytes.and.dragons.fantasyauction.controller;
 
+import com.bytes.and.dragons.fantasyauction.model.request.RegisterRequest;
 import com.bytes.and.dragons.fantasyauction.service.UserService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -13,17 +15,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/auth")
 @RequiredArgsConstructor
-public class AuthController {
-    
+public class UserController {
+
     private final UserService userService;
 
-    public record RegisterRequest(String username, String email, String password) {
-
-    }
-
     @PostMapping("/register")
-    public ResponseEntity<String> register(@RequestBody RegisterRequest request) {
-        userService.registerUser(request.username(), request.email(), request.password());
+    public ResponseEntity<String> register(@Valid @RequestBody RegisterRequest request) {
+        userService.register(request);
         return ResponseEntity.ok("User registered successfully");
     }
 
@@ -31,4 +29,5 @@ public class AuthController {
     public ResponseEntity<String> hello(Authentication authentication) {
         return ResponseEntity.ok("Hello, " + authentication.getName());
     }
+
 }

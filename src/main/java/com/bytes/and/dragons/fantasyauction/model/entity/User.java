@@ -1,6 +1,8 @@
-package com.bytes.and.dragons.fantasyauction.model;
+package com.bytes.and.dragons.fantasyauction.model.entity;
 
+import com.bytes.and.dragons.fantasyauction.security.UserAttributeConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
@@ -21,13 +23,14 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Table(name = "users")
 public class User extends BaseEntity implements UserDetails {
 
-    @Column(name = "username", nullable = false, unique = true)
+    @Column(name = "username")
     private String username;
 
-    @Column(name = "email", nullable = false, unique = true)
+    @Convert(converter = UserAttributeConverter.class)
+    @Column(name = "email")
     private String email;
 
-    @Column(name = "password", nullable = false)
+    @Column(name = "password")
     private String password;
 
     @ManyToMany(fetch = FetchType.EAGER)
