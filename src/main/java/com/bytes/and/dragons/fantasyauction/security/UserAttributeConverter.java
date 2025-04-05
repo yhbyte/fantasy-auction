@@ -1,18 +1,26 @@
 package com.bytes.and.dragons.fantasyauction.security;
 
-import com.bytes.and.dragons.fantasyauction.config.EncryptionConstants;
+import jakarta.annotation.PostConstruct;
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.encrypt.Encryptors;
 import org.springframework.security.crypto.encrypt.TextEncryptor;
 
 @Converter
 public class UserAttributeConverter implements AttributeConverter<String, String> {
 
-    private final TextEncryptor encryptor;
+    @Value("${app.encryption.password}")
+    private String encryptionPassword;
 
-    public UserAttributeConverter() {
-        this.encryptor = Encryptors.text(EncryptionConstants.SECRET, EncryptionConstants.SALT);
+    @Value("${app.encryption.salt}")
+    private String encryptionSalt;
+
+    private TextEncryptor encryptor;
+
+    @PostConstruct
+    public void init() {
+        encryptor = Encryptors.delux(encryptionPassword, encryptionSalt);
     }
 
     @Override

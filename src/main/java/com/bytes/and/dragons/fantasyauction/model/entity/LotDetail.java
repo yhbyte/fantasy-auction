@@ -1,4 +1,4 @@
-package com.bytes.and.dragons.fantasyauction.model;
+package com.bytes.and.dragons.fantasyauction.model.entity;
 
 import com.bytes.and.dragons.fantasyauction.model.enums.LotStatus;
 import jakarta.persistence.Column;

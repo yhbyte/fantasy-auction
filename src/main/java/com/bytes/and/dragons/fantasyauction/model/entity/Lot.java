@@ -1,4 +1,4 @@
-package com.bytes.and.dragons.fantasyauction.model;
+package com.bytes.and.dragons.fantasyauction.model.entity;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
