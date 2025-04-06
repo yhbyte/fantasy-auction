@@ -6,7 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
-import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,7 +21,7 @@ public class LotDetail extends BaseEntity {
     @Column(name = "bid_price")
     private Double bidPrice;
     @Column(name = "expire_date_time")
-    private LocalDateTime expireDateTime;
+    private ZonedDateTime expireDateTime;
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
     private LotStatus status;

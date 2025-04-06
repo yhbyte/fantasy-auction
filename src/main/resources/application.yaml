@@ -1,0 +1,28 @@
+spring:
+  application:
+    name: fantasy-auction
+
+  datasource:
+    url: jdbc:postgresql://localhost:5432/auction
+    username: postgres
+    password: postgres
+    hikari:
+      maximum-pool-size: 20
+      idle-timeout: 3000
+
+  jpa:
+    hibernate:
+      ddl-auto: none
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+  liquibase:
+    change-log: classpath:db/changelog/db.changelog-master.xml
+
+app:
+  encryption:
+    password: VeryStrongSecretKeyForEncryptionThatIsAtLeast32Chars!
+    salt: 0123456789abcdef
