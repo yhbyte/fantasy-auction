@@ -1,0 +1,10 @@
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="
+       http://www.liquibase.org/xml/ns/dbchangelog
+       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.3.xsd">
+
+  <include file="sql/V2025.04.06.16.45__initial_schema.sql" relativeToChangelogFile="true"/>
+  <include file="sql/V2025.04.06.16.55__add_base_entities.sql" relativeToChangelogFile="true"/>
+</databaseChangeLog>
