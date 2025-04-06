@@ -25,6 +25,7 @@ public class UserController {
         return ResponseEntity.ok("User registered successfully");
     }
 
+    // For testing reasons
     @GetMapping("/hello")
     public ResponseEntity<String> hello(Authentication authentication) {
         return ResponseEntity.ok("Hello, " + authentication.getName());
