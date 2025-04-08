@@ -2,7 +2,7 @@ package com.bytes.and.dragons.fantasyauction.service;
 
 import com.bytes.and.dragons.fantasyauction.model.entity.Role;
 import com.bytes.and.dragons.fantasyauction.model.entity.User;
-import com.bytes.and.dragons.fantasyauction.model.request.RegisterRequest;
+import com.bytes.and.dragons.fantasyauction.model.request.SignUpRequest;
 import com.bytes.and.dragons.fantasyauction.repository.RoleRepository;
 import com.bytes.and.dragons.fantasyauction.repository.UserRepository;
 import java.util.Optional;
@@ -19,7 +19,7 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void register(RegisterRequest request) {
+    public void register(SignUpRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already taken");
         }

@@ -26,3 +26,7 @@ app:
   encryption:
     password: VeryStrongSecretKeyForEncryptionThatIsAtLeast32Chars!
     salt: 0123456789abcdef
+
+jwt:
+  secret: 4ceb41f7e37c9c5d8e356c5b70dbef0aa1ab8f7be2da041a3b8167dce528b9aa
+  expiration: 10800000 # 3h
