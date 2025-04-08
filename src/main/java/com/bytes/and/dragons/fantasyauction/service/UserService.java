@@ -5,11 +5,11 @@ import com.bytes.and.dragons.fantasyauction.model.entity.User;
 import com.bytes.and.dragons.fantasyauction.model.request.SignUpRequest;
 import com.bytes.and.dragons.fantasyauction.repository.RoleRepository;
 import com.bytes.and.dragons.fantasyauction.repository.UserRepository;
-import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +19,8 @@ public class UserService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public void register(SignUpRequest request) {
+    @Transactional
+    public void registerUser(SignUpRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already taken");
         }
@@ -34,10 +35,6 @@ public class UserService {
         user.setRoles(Set.of(userRole));
 
         userRepository.save(user);
-    }
-
-    public Optional<User> findByUsername(String username) {
-        return userRepository.findByUsername(username);
     }
 
 }
