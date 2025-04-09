@@ -3,7 +3,7 @@ package com.bytes.and.dragons.fantasyauction.controller;
 import com.bytes.and.dragons.fantasyauction.model.request.SignInRequest;
 import com.bytes.and.dragons.fantasyauction.model.request.SignUpRequest;
 import com.bytes.and.dragons.fantasyauction.model.response.JwtAuthenticationResponse;
-import com.bytes.and.dragons.fantasyauction.security.AuthenticationService;
+import com.bytes.and.dragons.fantasyauction.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
