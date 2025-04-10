@@ -1,8 +1,18 @@
 package com.bytes.and.dragons.fantasyauction.config;
 
 import com.bytes.and.dragons.fantasyauction.security.CustomUserDetailsService;
-import com.bytes.and.dragons.fantasyauction.security.JwtAuthFilter;
+import com.nimbusds.jose.jwk.JWK;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.OctetSequenceKey;
+import com.nimbusds.jose.jwk.source.ImmutableJWKSet;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
+import java.util.Base64;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -15,16 +25,22 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
+import org.springframework.security.oauth2.jwt.NimbusJwtEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @RequiredArgsConstructor
 @EnableMethodSecurity
 @EnableWebSecurity
+@Slf4j
 public class SecurityConfig {
 
-    private final JwtAuthFilter jwtAuthFilter;
+    @Value("${jwt.secret}")
+    private String jwtSecret;
+
     private final CustomUserDetailsService userDetailsService;
 
     @Bean
@@ -35,11 +51,28 @@ public class SecurityConfig {
                         .requestMatchers("/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .oauth2ResourceServer(oauth2 -> oauth2
+                        .jwt(jwt -> jwt.decoder(jwtDecoder())))
                 .httpBasic(Customizer.withDefaults())
                 .formLogin(Customizer.withDefaults())
                 .logout(LogoutConfigurer::permitAll);
         return http.build();
+    }
+
+    @Bean
+    public JwtDecoder jwtDecoder() {
+        byte[] keyBytes = Base64.getDecoder().decode(jwtSecret);
+        SecretKey secretKey = new SecretKeySpec(keyBytes, "HmacSHA256");
+        return NimbusJwtDecoder.withSecretKey(secretKey).build();
+    }
+
+    @Bean
+    public JwtEncoder jwtEncoder() {
+        byte[] keyBytes = Base64.getDecoder().decode(jwtSecret);
+        SecretKey secretKey = new SecretKeySpec(keyBytes, "HmacSHA256");
+        JWK jwk = new OctetSequenceKey.Builder(secretKey).build();
+        JWKSource<SecurityContext> jwkSource = new ImmutableJWKSet<>(new JWKSet(jwk));
+        return new NimbusJwtEncoder(jwkSource);
     }
 
     @Bean

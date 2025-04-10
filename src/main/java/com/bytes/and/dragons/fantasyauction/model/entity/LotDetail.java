@@ -6,6 +6,7 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import jakarta.persistence.Table;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import lombok.Getter;
 import lombok.Setter;
@@ -17,11 +18,11 @@ import lombok.Setter;
 public class LotDetail extends BaseEntity {
 
     @Column(name = "initial_price")
-    private Double initialPrice;
+    private BigDecimal initialPrice;
     @Column(name = "bid_price")
-    private Double bidPrice;
-    @Column(name = "expire_date_time")
-    private ZonedDateTime expireDateTime;
+    private BigDecimal bidPrice;
+    @Column(name = "expires_at")
+    private ZonedDateTime expiresAt;
     @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
     private LotStatus status;
@@ -31,7 +32,7 @@ public class LotDetail extends BaseEntity {
         return "LotDetail{" +
                 "initialPrice=" + initialPrice +
                 ", bidPrice=" + bidPrice +
-                ", expireDateTime=" + expireDateTime +
+                ", expiresAt=" + expiresAt +
                 ", status=" + status +
                 "} " + super.toString();
     }

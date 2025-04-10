@@ -7,9 +7,11 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.bytes.and.dragons.fantasyauction.security.CustomUserDetails;
 import com.bytes.and.dragons.fantasyauction.security.JwtService;
 import com.bytes.and.dragons.fantasyauction.service.AuthenticationService;
 import com.bytes.and.dragons.fantasyauction.service.UserService;
+import java.util.HashSet;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -34,7 +36,7 @@ class AuthenticationServiceTest {
     @Test
     void signUp_shouldRegisterUser_whenInvoked() {
         // given
-        when(jwtService.generateToken(any())).thenReturn("token");
+        when(jwtService.generateToken(any(), any())).thenReturn("token");
 
         // when
         var response = authenticationService.signUp(getSignUpRequest());
@@ -47,7 +49,11 @@ class AuthenticationServiceTest {
     @Test
     void signIn_shouldAuthenticateUser_whenInvoked() {
         // given
-        when(jwtService.generateToken(any())).thenReturn("token");
+        when(jwtService.generateToken(any(), any())).thenReturn("token");
+        when(authenticationManager.authenticate(any()))
+                .thenReturn(new UsernamePasswordAuthenticationToken(
+                        new CustomUserDetails(1L, "userName", "password", new HashSet<>()),
+                        "token"));
 
         // when
         var response = authenticationService.signIn(getSignInRequest());

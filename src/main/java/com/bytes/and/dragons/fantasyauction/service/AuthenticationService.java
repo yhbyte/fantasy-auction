@@ -3,6 +3,7 @@ package com.bytes.and.dragons.fantasyauction.service;
 import com.bytes.and.dragons.fantasyauction.model.request.SignInRequest;
 import com.bytes.and.dragons.fantasyauction.model.request.SignUpRequest;
 import com.bytes.and.dragons.fantasyauction.model.response.JwtAuthenticationResponse;
+import com.bytes.and.dragons.fantasyauction.security.CustomUserDetails;
 import com.bytes.and.dragons.fantasyauction.security.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +21,17 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public JwtAuthenticationResponse signUp(SignUpRequest request) {
-        userService.registerUser(request);
-        var jwt = jwtService.generateToken(request.getUsername());
+        Long userId = userService.registerUser(request);
+        var jwt = jwtService.generateToken(request.getUsername(), userId);
         return new JwtAuthenticationResponse(jwt);
     }
 
     public JwtAuthenticationResponse signIn(SignInRequest request) {
-        authenticationManager.authenticate(
+        var auth = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword()));
 
-        var jwt = jwtService.generateToken(request.getUsername());
+        Long userId = ((CustomUserDetails) auth.getPrincipal()).getId();
+        var jwt = jwtService.generateToken(request.getUsername(), userId);
         return new JwtAuthenticationResponse(jwt);
     }
 
