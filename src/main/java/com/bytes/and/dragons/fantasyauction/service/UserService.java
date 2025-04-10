@@ -15,18 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
 
+    private static final String USER_ROLE = "ROLE_USER";
+
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Transactional
-    public void registerUser(SignUpRequest request) {
+    public Long registerUser(SignUpRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new IllegalArgumentException("Username already taken");
         }
 
-        Role userRole = roleRepository.findByName("ROLE_USER")
-                .orElseGet(() -> roleRepository.save(Role.builder().name("ROLE_USER").build()));
+        Role userRole = roleRepository.findByName(USER_ROLE)
+                .orElseGet(() -> roleRepository.save(Role.builder().name(USER_ROLE).build()));
 
         User user = new User();
         user.setUsername(request.getUsername());
@@ -35,6 +37,12 @@ public class UserService {
         user.setRoles(Set.of(userRole));
 
         userRepository.save(user);
+        return user.getId();
+    }
+
+    @Transactional
+    public User getUserById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
     }
 
 }

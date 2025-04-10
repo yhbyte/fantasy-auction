@@ -4,14 +4,14 @@
 CREATE TABLE roles
 (
     id BIGSERIAL PRIMARY KEY,
-    name VARCHAR(255) NOT NULL UNIQUE
+    name VARCHAR(100) NOT NULL UNIQUE
 );
 
 -- changeset yehorhavryliuk:1743946566986-6
 CREATE TABLE users
 (
     id BIGSERIAL PRIMARY KEY,
-    username   VARCHAR(255) NOT NULL UNIQUE,
+    username   VARCHAR(100) NOT NULL UNIQUE,
     email      VARCHAR(255) NOT NULL UNIQUE,
     password   VARCHAR(255) NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL,

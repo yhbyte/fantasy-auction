@@ -1,61 +1,36 @@
 package com.bytes.and.dragons.fantasyauction.security;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import java.nio.charset.StandardCharsets;
-import java.util.Date;
-import java.util.function.Function;
-import javax.crypto.SecretKey;
-import lombok.extern.slf4j.Slf4j;
+import java.time.Instant;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
+import org.springframework.security.oauth2.jwt.JwsHeader;
+import org.springframework.security.oauth2.jwt.JwtClaimsSet;
+import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.security.oauth2.jwt.JwtEncoderParameters;
 import org.springframework.stereotype.Service;
 
 @Service
-@Slf4j
+@RequiredArgsConstructor
 public class JwtService {
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
     @Value("${jwt.expiration}")
     private int jwtExpirationMs;
-    private SecretKey key;
 
-    @PostConstruct
-    public void init() {
-        this.key = Keys.hmacShaKeyFor(jwtSecret.getBytes(StandardCharsets.UTF_8));
-    }
+    private final JwtEncoder jwtEncoder;
 
-    public String generateToken(String username) {
-        return Jwts.builder()
+    public String generateToken(String username, Long userId) {
+        Instant now = Instant.now();
+        JwtClaimsSet claims = JwtClaimsSet.builder()
+                .issuer("self")
+                .issuedAt(now)
+                .expiresAt(now.plusMillis(jwtExpirationMs))
                 .subject(username)
-                .issuedAt(new Date())
-                .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(key)
-                .compact();
+                .claim("userId", userId)
+                .build();
+
+        var params = JwtEncoderParameters.from(JwsHeader.with(MacAlgorithm.HS256).build(), claims);
+        return jwtEncoder.encode(params).getTokenValue();
     }
 
-    public String extractUsernameFromToken(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
-
-    public boolean validateJwtToken(String token) {
-        try {
-            Jwts.parser().verifyWith(key).build().parseSignedClaims(token);
-            return true;
-        } catch (Exception e) {
-            log.error("JWT token validation error: {}", e.getMessage());
-            return false;
-        }
-    }
-
-    private Claims extractAllClaims(String token) {
-        return Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload();
-    }
-
-    private <T> T extractClaim(String token, Function<Claims, T> claimsResolvers) {
-        final Claims claims = extractAllClaims(token);
-        return claimsResolvers.apply(claims);
-    }
 }
