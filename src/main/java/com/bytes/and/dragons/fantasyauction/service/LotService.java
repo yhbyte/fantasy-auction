@@ -33,7 +33,7 @@ public class LotService {
 
     @Transactional
     public void createLot(CreateLotRequest request, Long userId) {
-        User user = userService.getUserById(userId);
+        User user =  userService.getUserById(userId);
 
         Item item = itemMapper.toItemEntity(request.getItem());
         Lot lot = lotMapper.toLotEntity(request);
