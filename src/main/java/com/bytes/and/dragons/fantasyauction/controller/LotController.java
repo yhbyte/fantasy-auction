@@ -6,6 +6,7 @@ import com.bytes.and.dragons.fantasyauction.service.LotService;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -29,10 +30,11 @@ public class LotController {
     }
 
     @PostMapping
-    public ResponseEntity<Void> signUp(@AuthenticationPrincipal Jwt jwt, @Valid @RequestBody CreateLotRequest request) {
+    public ResponseEntity<Void> createLot(@AuthenticationPrincipal Jwt jwt,
+                                          @Valid @RequestBody CreateLotRequest request) {
         Long userId = jwt.getClaim("userId");
         lotService.createLot(request, userId);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 }

@@ -7,10 +7,12 @@ import com.bytes.and.dragons.fantasyauction.repository.RoleRepository;
 import com.bytes.and.dragons.fantasyauction.repository.UserRepository;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -42,7 +44,10 @@ public class UserService {
 
     @Transactional
     public User getUserById(Long userId) {
-        return userRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        return userRepository.findById(userId).orElseThrow(() -> {
+            log.error("User not found");
+            return new IllegalArgumentException("User not found");
+        });
     }
 
 }

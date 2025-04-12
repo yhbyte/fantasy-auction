@@ -2,7 +2,7 @@ package com.bytes.and.dragons.fantasyauction.unit.service;
 
 import static com.bytes.and.dragons.fantasyauction.util.TestData.EMAIL;
 import static com.bytes.and.dragons.fantasyauction.util.TestData.PASSWORD;
-import static com.bytes.and.dragons.fantasyauction.util.TestData.USER_NAME;
+import static com.bytes.and.dragons.fantasyauction.util.TestData.TEST_NAME;
 import static com.bytes.and.dragons.fantasyauction.util.TestData.USER_ROLE;
 import static com.bytes.and.dragons.fantasyauction.util.TestData.getRole;
 import static com.bytes.and.dragons.fantasyauction.util.TestData.getSignUpRequest;
@@ -62,7 +62,7 @@ class UserServiceTest {
         verify(roleRepository).findByName(USER_ROLE);
         verify(userRepository).save(userArgumentCaptor.capture());
 
-        assertEquals(USER_NAME, userArgumentCaptor.getValue().getUsername());
+        assertEquals(TEST_NAME, userArgumentCaptor.getValue().getUsername());
         assertEquals(PASSWORD, userArgumentCaptor.getValue().getPassword());
         assertEquals(EMAIL, userArgumentCaptor.getValue().getEmail());
         assertEquals(USER_ROLE, userArgumentCaptor.getValue().getRoles().iterator().next().getName());
