@@ -32,8 +32,9 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
-    implementation 'org.liquibase:liquibase-core'
 
+    implementation 'org.liquibase:liquibase-core'
+    implementation 'net.logstash.logback:logstash-logback-encoder:8.1'
     implementation 'org.apache.commons:commons-lang3:3.17.0'
     implementation 'org.mapstruct:mapstruct:1.6.3'
 

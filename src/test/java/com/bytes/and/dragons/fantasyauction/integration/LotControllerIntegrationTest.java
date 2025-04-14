@@ -6,7 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.bytes.and.dragons.fantasyauction.config.PostgresTestContainerConfig;
 import com.bytes.and.dragons.fantasyauction.model.entity.Lot;
+import com.bytes.and.dragons.fantasyauction.model.enums.ItemType;
 import com.bytes.and.dragons.fantasyauction.model.request.CreateLotRequest;
+import com.bytes.and.dragons.fantasyauction.model.response.LotResponse;
 import com.bytes.and.dragons.fantasyauction.repository.LotRepository;
 import com.bytes.and.dragons.fantasyauction.security.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -14,6 +16,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
 import com.github.database.rider.junit5.api.DBRider;
 import io.restassured.RestAssured;
+import io.restassured.common.mapper.TypeRef;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -42,6 +45,34 @@ class LotControllerIntegrationTest {
     @BeforeEach
     void setUp() {
         RestAssured.port = port;
+    }
+
+    @Test
+    @DataSet(executeScriptsBefore =
+            {"scripts/populate_users.sql", "scripts/populate_items.sql", "scripts/populate_lots.sql"},
+            executeScriptsAfter = "scripts/clear_schema.sql")
+    void getLots_shouldReturnAllLots_whenRequestIsValid() {
+        // given
+        String token = jwtService.generateToken("bytesanddragonsua", 1L);
+
+        // when
+        LotResponse response =
+                given()
+                        .contentType(ContentType.JSON)
+                        .headers("Authorization", "Bearer " + token)
+                        .when()
+                        .get("/lots")
+                        .then()
+                        .statusCode(200)
+                        .extract()
+                        .body().as(new TypeRef<>() {
+                        });
+
+        // then
+        assertEquals(1, response.getLots().size());
+        assertEquals(1, response.getLots().get(0).getId());
+        assertEquals("test_item", response.getLots().get(0).getItemName());
+        assertEquals(ItemType.OTHER, response.getLots().get(0).getItemType());
     }
 
     @Test

@@ -4,6 +4,7 @@ import static com.bytes.and.dragons.fantasyauction.model.enums.LotStatus.DRAFT;
 
 import com.bytes.and.dragons.fantasyauction.mapper.ItemMapper;
 import com.bytes.and.dragons.fantasyauction.mapper.LotMapper;
+import com.bytes.and.dragons.fantasyauction.model.dto.LotDto;
 import com.bytes.and.dragons.fantasyauction.model.entity.Item;
 import com.bytes.and.dragons.fantasyauction.model.entity.Lot;
 import com.bytes.and.dragons.fantasyauction.model.entity.User;
@@ -25,15 +26,17 @@ public class LotService {
     private final UserService userService;
 
     @Transactional
-    public List<LotResponse> getLots() {
-        return lotRepository.findAll().stream()
-                .map(lotMapper::toLotResponse)
+    public LotResponse getLots() {
+        List<LotDto> lots = lotRepository.findAll().stream()
+                .map(lotMapper::toLotDto)
                 .toList();
+
+        return new LotResponse(lots);
     }
 
     @Transactional
     public void createLot(CreateLotRequest request, Long userId) {
-        User user =  userService.getUserById(userId);
+        User user = userService.getUserById(userId);
 
         Item item = itemMapper.toItemEntity(request.getItem());
         Lot lot = lotMapper.toLotEntity(request);
