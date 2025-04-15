@@ -4,6 +4,8 @@ import com.bytes.and.dragons.fantasyauction.model.enums.ItemType;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -19,7 +21,8 @@ public class Item extends BaseEntity {
 
     @Column(name = "name")
     private String name;
-    @JoinColumn(name = "type")
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "type")
     private ItemType type;
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinColumn(name = "user_id")

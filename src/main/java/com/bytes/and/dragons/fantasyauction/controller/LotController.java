@@ -4,7 +4,6 @@ import com.bytes.and.dragons.fantasyauction.model.request.CreateLotRequest;
 import com.bytes.and.dragons.fantasyauction.model.response.LotResponse;
 import com.bytes.and.dragons.fantasyauction.service.LotService;
 import jakarta.validation.Valid;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +23,7 @@ public class LotController {
     private final LotService lotService;
 
     @GetMapping
-    public ResponseEntity<List<LotResponse>> getLots() {
+    public ResponseEntity<LotResponse> getLots() {
         var response = lotService.getLots();
         return ResponseEntity.ok(response);
     }
