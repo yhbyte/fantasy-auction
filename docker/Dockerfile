@@ -2,7 +2,7 @@ FROM gradle:8.9.0-jdk21 AS builder
 
 WORKDIR /app
 # Copy only the necessary files first to take advantage of Docker layer caching
-COPY ../build.gradle settings.gradle /app/
+COPY ../build.gradle.kts settings.gradle /app/
 
 RUN gradle build -i --no-daemon || return 0
 
