@@ -7,5 +7,5 @@
 
   <include file="sql/V2025.04.06.16.45__initial_schema.sql" relativeToChangelogFile="true"/>
   <include file="sql/V2025.04.06.16.55__add_base_entities.sql" relativeToChangelogFile="true"/>
-  <include file="sql/V2025.04.14.18.28__alter_items_remove_type_id.sql" relativeToChangelogFile="true"/>
+  <include file="sql/V2025.04.16.20.57__create_bids.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

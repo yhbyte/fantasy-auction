@@ -21,7 +21,7 @@ public class LoggingAspect {
 
         log.info("Invoking method: {} with arguments: {}", method.getName(), joinPoint.getArgs());
         Object result = joinPoint.proceed();
-
+        
         if (annotation.logAfter()) {
             log.info("Exiting method: {} with result: {}", method.getName(), result);
         }

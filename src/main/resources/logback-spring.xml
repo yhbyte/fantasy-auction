@@ -1,36 +1,70 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="30 seconds">
-  <property name="LOGS_DIR" value="${LOGS_DIR:-logs}"/>
 
-  <property name="LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"/>
-  <property name="CONSOLE_LOG_PATTERN" value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n%ex{full}"/>
+  <!-- Register Spring Boot converters for %clr and enhanced throwable output -->
+  <conversionRule conversionWord="clr"  converterClass="org.springframework.boot.logging.logback.ColorConverter"/>
+  <conversionRule conversionWord="wex"  converterClass="org.springframework.boot.logging.logback.WhitespaceThrowableProxyConverter"/>
+  <conversionRule conversionWord="wEx"  converterClass="org.springframework.boot.logging.logback.ExtendedWhitespaceThrowableProxyConverter"/>
+
+  <springProperty name="LOG_PATH" source="logging.file.path" defaultValue="${LOGS_DIR:-logs}"/>
+  <springProperty name="APP_NAME" source="spring.application.name" defaultValue="application"/>
+
+  <timestamp key="byDay" datePattern="yyyy-MM-dd"/>
+  <property name="LOG_FILE" value="${LOG_PATH}/${APP_NAME}-${byDay}.log"/>
+
+  <property name="CONSOLE_PATTERN" value="%clr(%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ}){faint} %clr([%thread]){faint} %clr(%-5level) %clr(%logger{36}){cyan} - %msg%n%ex{full}"/>
+  <property name="FILE_PATTERN"    value="%d{yyyy-MM-dd'T'HH:mm:ss.SSSZ} [%thread] %-5level %logger{36} [%file:%line] - %msg%n"/>
 
   <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-      <pattern>${CONSOLE_LOG_PATTERN}</pattern>
+      <pattern>${CONSOLE_PATTERN}</pattern>
     </encoder>
   </appender>
 
   <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-    <file>${LOGS_DIR}/application.log</file>
-    <!-- Daily rolling policy -->
+    <file>${LOG_FILE}</file>
     <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-      <fileNamePattern>${LOGS_DIR}/application.%d{yyyy-MM-dd}.log</fileNamePattern>
+      <fileNamePattern>${LOG_PATH}/${APP_NAME}-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>100MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
       <maxHistory>30</maxHistory>
-      <totalSizeCap>1GB</totalSizeCap>
+      <totalSizeCap>2GB</totalSizeCap>
     </rollingPolicy>
     <encoder>
-      <pattern>${LOG_PATTERN}</pattern>
+      <pattern>${FILE_PATTERN}</pattern>
     </encoder>
   </appender>
 
-  <root level="INFO">
+  <appender name="ASYNC_CONSOLE" class="ch.qos.logback.classic.AsyncAppender">
     <appender-ref ref="CONSOLE"/>
+    <queueSize>5000</queueSize>
+    <discardingThreshold>0</discardingThreshold>
+  </appender>
+
+  <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
     <appender-ref ref="FILE"/>
+    <queueSize>5000</queueSize>
+    <discardingThreshold>0</discardingThreshold>
+  </appender>
+
+  <logger name="org.springframework" level="WARN"/>
+  <logger name="org.hibernate"  level="WARN"/>
+
+  <logger name="com.bytes.and.dragons" level="DEBUG" additivity="false">
+    <appender-ref ref="ASYNC_CONSOLE"/>
+    <appender-ref ref="ASYNC_FILE"/>
+  </logger>
+
+  <root level="INFO">
+    <appender-ref ref="ASYNC_CONSOLE"/>
+    <appender-ref ref="ASYNC_FILE"/>
   </root>
 
-  <!-- Specific package log level adjustments to reduce log noise -->
-  <logger name="org.springframework" level="WARN"/>
-  <logger name="org.hibernate" level="WARN"/>
+  <springProfile name="dev">
+    <root level="DEBUG">
+      <appender-ref ref="CONSOLE"/>
+    </root>
+  </springProfile>
 
 </configuration>

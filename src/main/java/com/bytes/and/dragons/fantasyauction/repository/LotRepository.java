@@ -12,4 +12,6 @@ public interface LotRepository extends JpaRepository<Lot, Long> {
     @Query("select l from Lot l join fetch l.item where l.id = :id")
     Optional<Lot> findByIdWithItem(Long id);
 
+    boolean existsByItemId(Long id);
+
 }

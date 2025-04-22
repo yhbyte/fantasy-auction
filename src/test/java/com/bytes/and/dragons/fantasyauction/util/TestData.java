@@ -1,13 +1,16 @@
 package com.bytes.and.dragons.fantasyauction.util;
 
-import com.bytes.and.dragons.fantasyauction.model.dto.ItemDto;
+import com.bytes.and.dragons.fantasyauction.model.entity.Item;
+import com.bytes.and.dragons.fantasyauction.model.entity.Lot;
 import com.bytes.and.dragons.fantasyauction.model.entity.Role;
 import com.bytes.and.dragons.fantasyauction.model.entity.User;
 import com.bytes.and.dragons.fantasyauction.model.enums.ItemType;
+import com.bytes.and.dragons.fantasyauction.model.request.CreateItemRequest;
 import com.bytes.and.dragons.fantasyauction.model.request.CreateLotRequest;
 import com.bytes.and.dragons.fantasyauction.model.request.SignInRequest;
 import com.bytes.and.dragons.fantasyauction.model.request.SignUpRequest;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.Set;
 
 public class TestData {
@@ -16,6 +19,7 @@ public class TestData {
     public static final String PASSWORD = "password";
     public static final String EMAIL = "email";
     public static final String USER_ROLE = "ROLE_USER";
+    public static final Long TEST_ID = 1L;
 
     private TestData() {
     }
@@ -56,14 +60,33 @@ public class TestData {
 
     public static CreateLotRequest getCreateLotRequest() {
         CreateLotRequest request = new CreateLotRequest();
-        request.setDurationDays(3);
+        request.setEndTime(Instant.now().plusSeconds(360000));
         request.setPrice(BigDecimal.TEN);
-
-        ItemDto itemDto = new ItemDto();
-        itemDto.setName(TEST_NAME);
-        itemDto.setType(ItemType.OTHER);
-
-        request.setItem(itemDto);
+        request.setItemId(TEST_ID);
         return request;
+    }
+
+    public static CreateItemRequest getCreateItemRequest() {
+        CreateItemRequest request = new CreateItemRequest();
+        request.setName(TEST_NAME);
+        request.setType(ItemType.OTHER);
+        return request;
+    }
+
+    public static Item getItem() {
+        Item item = new Item();
+        item.setId(TEST_ID);
+        item.setName(TEST_NAME);
+        item.setType(ItemType.OTHER);
+        return item;
+    }
+
+    public static Lot getLot() {
+        Lot lot = new Lot();
+        lot.setId(TEST_ID);
+        lot.setSeller(getUser());
+        lot.setItem(getItem());
+
+        return lot;
     }
 }
