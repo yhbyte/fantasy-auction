@@ -11,7 +11,6 @@ import com.bytes.and.dragons.fantasyauction.config.PostgresTestContainerConfig;
 import com.bytes.and.dragons.fantasyauction.model.request.SignInRequest;
 import com.bytes.and.dragons.fantasyauction.model.request.SignUpRequest;
 import com.bytes.and.dragons.fantasyauction.model.response.JwtAuthenticationResponse;
-import com.bytes.and.dragons.fantasyauction.security.JwtService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.database.rider.core.api.dataset.DataSet;
@@ -35,9 +34,6 @@ class AuthenticationControllerIntegrationTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Autowired
-    private JwtService jwtService;
-
     @LocalServerPort
     private int port;
 
@@ -50,6 +46,7 @@ class AuthenticationControllerIntegrationTest {
     }
 
     @Test
+    @DataSet(executeScriptsAfter = "scripts/clear_schema.sql")
     void signUp_shouldReturnValidJwtToken_whenRequestIsValid() throws JsonProcessingException {
         // given
         SignUpRequest signUpRequest = new SignUpRequest(TEST_NAME, EMAIL, PASSWORD);

@@ -70,13 +70,14 @@ class LotControllerIntegrationTest {
 
         // then
         assertEquals(1, response.getLots().size());
-        assertEquals(1, response.getLots().get(0).getId());
-        assertEquals("test_item", response.getLots().get(0).getItemName());
-        assertEquals(ItemType.OTHER, response.getLots().get(0).getItemType());
+        assertEquals(1, response.getLots().getFirst().getId());
+        assertEquals("test_item", response.getLots().getFirst().getItemName());
+        assertEquals(ItemType.OTHER, response.getLots().getFirst().getItemType());
     }
 
     @Test
-    @DataSet(executeScriptsBefore = "scripts/populate_users.sql", executeScriptsAfter = "scripts/clear_schema.sql")
+    @DataSet(executeScriptsBefore = {"scripts/populate_users.sql",
+            "scripts/populate_items.sql"}, executeScriptsAfter = "scripts/clear_schema.sql")
     void createLot_shouldCreateLot_whenRequestIsValid() throws JsonProcessingException {
         // given
         CreateLotRequest createLotRequest = getCreateLotRequest();
@@ -95,6 +96,6 @@ class LotControllerIntegrationTest {
 
         // then
         Lot lot = lotRepository.findByIdWithItem(1L).get();
-        assertEquals(createLotRequest.getItem().getName(), lot.getItem().getName());
+        assertEquals(createLotRequest.getItemId(), lot.getItem().getId());
     }
 }

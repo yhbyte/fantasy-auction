@@ -1,12 +1,12 @@
 package com.bytes.and.dragons.fantasyauction.model.request;
 
-import com.bytes.and.dragons.fantasyauction.model.dto.ItemDto;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotNull;
 import java.math.BigDecimal;
+import java.time.Instant;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Data
 @AllArgsConstructor
@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 public class CreateLotRequest {
 
     @NotNull
-    @Valid
-    private ItemDto item;
-    @NotNull
     private BigDecimal price;
     @NotNull
-    private Integer durationDays;
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
+    private Instant endTime;
+    @NotNull
+    private Long itemId;
 
 }
